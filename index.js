@@ -278,6 +278,10 @@ app.listen(port, () => {
   console.log(`🚀 Webhook server running on port ${port}`);
 });
 
+//install command
+//npm init -y
+//npm install express body-parser nodemailer
+
 // first terminal >>> node index.js
 //Second terminal >>> npx localtunnel --port 3000
 // https://<your-url>/webhook
