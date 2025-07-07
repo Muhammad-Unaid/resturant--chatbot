@@ -45,47 +45,45 @@ app.post("/webhook", (req, res) => {
   let responseText = "";
 
   // 1. Jab user item choose kare
-  if (intent.includes("Intent") && parameters["menu_items"]) {
-    const selectedItem = parameters["menu_items"].toLowerCase(); // Normalize to lowercase
-    const formattedItem =
-      selectedItem.charAt(0).toUpperCase() + selectedItem.slice(1);
-    // Capitalize the first letter
-    const price = priceList[formattedItem] || 0; // Get price or default to 0 if not found
+if (intent.includes("Intent") && parameters["menu_items"]) {
+  const selectedItem = parameters["menu_items"].toLowerCase();
 
-    // Add item to cart (for later total calculation)
-    cart.push(formattedItem);
+  // Fix: Capitalize each word
+  const formattedItem = selectedItem
+    .split(" ")
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
 
-    responseText = `✅ ${formattedItem} added to your cart. Price: Rs. ${price}. Would you like anything else?`;
+  const price = priceList[formattedItem] || 0;
 
-    responsePayload = {
-      fulfillmentMessages: [
-        {
-          text: {
-            text: [responseText],
-          },
-        },
-        {
-          payload: {
-            richContent: [
-              [
-                {
-                  type: "chips",
-                  options: [
-                    {
-                      text: " ✔️ Yes",
-                    },
-                    {
-                      text: "No",
-                    },
-                  ],
-                },
-              ],
+  // Add to cart
+  cart.push(formattedItem);
+
+  responseText = `✅ ${formattedItem} added to your cart. Price: Rs. ${price}. Would you like anything else?`;
+
+  responsePayload = {
+    fulfillmentMessages: [
+      {
+        text: { text: [responseText] },
+      },
+      {
+        payload: {
+          richContent: [
+            [
+              {
+                type: "chips",
+                options: [
+                  { text: " ✔️ Yes" },
+                  { text: "No" },
+                ],
+              },
             ],
-          },
+          ],
         },
-      ],
-    };
-  } 
+      },
+    ],
+  };
+} 
     
 
   // 2. When the user says "No" (end of selection)
